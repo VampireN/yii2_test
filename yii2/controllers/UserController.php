@@ -25,9 +25,9 @@ class UserController extends \yii\web\Controller
     }
 	
 	
-	 /**
-     * Вывод Топ-листа рефералов
-     */
+	/**
+      * Вывод Топ-листа рефералов
+      */
     public function actionTop()
     {
         $ref_user = Refuser::find()
@@ -39,9 +39,9 @@ class UserController extends \yii\web\Controller
     }
 	
 	
-	 /**
-     * @return array
-     */
+	/**
+      * @return array
+      */
     public function actions()
     {
 		return [
@@ -57,8 +57,8 @@ class UserController extends \yii\web\Controller
 
 
     /**
-     *Вход на сайт
-     */
+      * Вход на сайт
+      */
     public function actionLogin()
     {
 	    if (!\Yii::$app->user->isGuest) {
@@ -81,8 +81,8 @@ class UserController extends \yii\web\Controller
 
 
     /**
-     * Выход
-     */
+      * Выход
+      */
     public function actionLogout()
     {
         Yii::$app->user->logout();
@@ -156,10 +156,12 @@ class UserController extends \yii\web\Controller
     {
         $model = $this->loadModel($id);
 		$model->scenario = 'update';
+		
 		if (isset($_POST['ajax']) && $_POST['ajax'] === 'update-form') {
             echo ActiveForm::validate($model);
             Yii::app()->end();
         }
+		
         if ($model->load(Yii::$app->request->post()) )
 		 {
 	        $model->avatar = UploadedFile::getInstance($model, 'avatar');
@@ -170,7 +172,8 @@ class UserController extends \yii\web\Controller
                  $model->photo = $fileName;
                  $file = Yii::$app->basePath . '/web/images/users/' . $fileName;
 				 $model->avatar->saveAs($file);
-				 }
+			}
+				 
             $model->setPassword($model->password);
 			$model->generateAuthKey();
               
@@ -252,7 +255,7 @@ class UserController extends \yii\web\Controller
 			  $ref = 0;
 			  }
 			  
-              if (isset($_POST['Personaldata'])){
+              if (isset($_POST['Personaldata'])) {
                   $model->attributes = $_POST['Personaldata'];
                   $model->verifyCode = $_POST['Personaldata']['verifyCode'];
 				  
@@ -295,9 +298,9 @@ class UserController extends \yii\web\Controller
                       return $this->render('registration', ['model' => $model]);
                  }
               }
-            else {
+              else {
                 return $this->render('registration', ['model' => $model]);
-            }
+              }
         }
     }
 

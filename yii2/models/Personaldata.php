@@ -28,8 +28,7 @@ class Personaldata extends \yii\db\ActiveRecord
     public $verifyCode;
     public $avatar; 
     public $rememberMe = true;
-   // private $_identity;
-   // public $errorCode;
+	
     private $_user = false;
 
     /**
@@ -115,10 +114,10 @@ class Personaldata extends \yii\db\ActiveRecord
     {
 	
         if ($photo !== "") {
-            return Html::img( Url::to('yii2/web/images/users/' . $photo,true), ['alt' => $username,'width'=>$width,'height'=>$height,'class'=>$class]);
+            return Html::img( Url::to('yii2/web/images/users/' . $photo,true), ['alt' => $username,'width' => $width,'height' => $height,'class' => $class]);
         }
         else {
-            return Html::img( Url::to('yii2/web/images/pics/noimage.gif',true), ['alt' => 'noimage','width'=>$width,'height'=>$height,'class'=>$class]);
+            return Html::img( Url::to('yii2/web/images/pics/noimage.gif',true), ['alt' => 'noimage','width' => $width,'height' => $height,'class' => $class]);
         }
     }
 	
