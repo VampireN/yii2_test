@@ -25,7 +25,7 @@ class UserController extends \yii\web\Controller
     }
 	
 	
-	/**
+    /**
       * Вывод Топ-листа рефералов
       */
     public function actionTop()
@@ -39,12 +39,12 @@ class UserController extends \yii\web\Controller
     }
 	
 	
-	/**
+    /**
       * @return array
       */
     public function actions()
     {
-		return [
+        return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
@@ -61,22 +61,24 @@ class UserController extends \yii\web\Controller
       */
     public function actionLogin()
     {
-	    if (!\Yii::$app->user->isGuest) {
+        if (!\Yii::$app->user->isGuest) {
            return $this->goHome();
         }
-	    $model = new LoginForm();
+	   
+        $model = new LoginForm();
 
-	    if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->isAjax) {
 	    $model->load($_POST);
 	    Yii::$app->response->format = Response::FORMAT_JSON;
 	    return ActiveForm::validate($model);
-	    }
+        }
 		
-	    if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
 	    return $this->goBack();
-	    } else {
-	    return $this->render('login', ['model' => $model]);
-	    }
+        } 
+        else {
+	     return $this->render('login', ['model' => $model]);
+        }
     }
 
 
@@ -114,8 +116,9 @@ class UserController extends \yii\web\Controller
     {
         if (($model = Personaldata::findOne($id)) !== null) {
             return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+        } 
+        else {
+             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
 
@@ -129,9 +132,9 @@ class UserController extends \yii\web\Controller
     {
 
         $ref_user = Refuser::find()
-		           ->where(['id_ref'=>$id])
-		           ->orderBy('number DESC')
-			       ->all();
+		   ->where(['id_ref'=>$id])
+		   ->orderBy('number DESC')
+	           ->all();
 
         return  $this->render('my_ref', array('ref_user' => $ref_user));
     }
@@ -155,27 +158,26 @@ class UserController extends \yii\web\Controller
     public function actionUpdate($id)
     {
         $model = $this->loadModel($id);
-		$model->scenario = 'update';
+        $model->scenario = 'update';
 		
-		if (isset($_POST['ajax']) && $_POST['ajax'] === 'update-form') {
+	if (isset($_POST['ajax']) && $_POST['ajax'] === 'update-form') {
             echo ActiveForm::validate($model);
             Yii::app()->end();
         }
 		
-        if ($model->load(Yii::$app->request->post()) )
-		 {
-	        $model->avatar = UploadedFile::getInstance($model, 'avatar');
+        if ($model->load(Yii::$app->request->post()) ) {
+	    $model->avatar = UploadedFile::getInstance($model, 'avatar');
 
             if ($model->avatar) {
-                 $sourcePath = pathinfo($model->avatar->name); 
-                 $fileName = date('m-d') . '-' . md5($model->username) . '.' . $sourcePath['extension'];
-                 $model->photo = $fileName;
-                 $file = Yii::$app->basePath . '/web/images/users/' . $fileName;
-				 $model->avatar->saveAs($file);
-			}
+                $sourcePath = pathinfo($model->avatar->name); 
+                $fileName = date('m-d') . '-' . md5($model->username) . '.' . $sourcePath['extension'];
+                $model->photo = $fileName;
+                $file = Yii::$app->basePath . '/web/images/users/' . $fileName;
+	        $model->avatar->saveAs($file);
+	     }
 				 
             $model->setPassword($model->password);
-			$model->generateAuthKey();
+            $model->generateAuthKey();
               
             if ($model->save()) {
                 $this->redirect(array('my'));
@@ -194,7 +196,7 @@ class UserController extends \yii\web\Controller
     {
         $ref_user = Refuser::find()
                    ->where(['id_user' =>$id])
-		           ->one();
+		   ->one();
 
         // Если у пользователя есть выше стоящий реферал ищем его данные в бд
         if ($ref_user->id_ref != 0) {
@@ -247,17 +249,17 @@ class UserController extends \yii\web\Controller
             $this->redirect(Yii::$app()->homeUrl);
         }
         else {
-		      if (isset($_GET['ref'])) {
-		      $ref = $_GET['ref'];
-              $model_ref->id_ref =(int)$ref;
-              }
-			  else {
-			  $ref = 0;
-			  }
+	       if (isset($_GET['ref'])) {
+		   $ref = $_GET['ref'];
+                   $model_ref->id_ref =(int)$ref;
+                }
+                else {
+	              $ref = 0;
+	        }
 			  
-              if (isset($_POST['Personaldata'])) {
-                  $model->attributes = $_POST['Personaldata'];
-                  $model->verifyCode = $_POST['Personaldata']['verifyCode'];
+                if (isset($_POST['Personaldata'])) {
+                    $model->attributes = $_POST['Personaldata'];
+                    $model->verifyCode = $_POST['Personaldata']['verifyCode'];
 				  
                   if ($model->validate()) {
 				
@@ -272,9 +274,9 @@ class UserController extends \yii\web\Controller
                           $model->avatar->saveAs($file);
                       }
 					  
-					  $sms = $model->username;
+		      $sms = $model->username;
                       $model->setPassword($model->password);
-					  $model->generateAuthKey();
+		      $model->generateAuthKey();
                       $model->save(false);
 					
                       $model_ref->id_user = $model->id;
@@ -285,13 +287,13 @@ class UserController extends \yii\web\Controller
                           $ref_user = Refuser::findOne(['id_user' => $ref]);
 
                           if ($ref_user !== null) {
-							  $num = $ref_user->number;
+			      $num = $ref_user->number;
                               $ref_user->number = $num + 1 ;
                               $ref_user->save();
                           }
                       }
 					
-                      return $this->render('registration_ok',['sms'=>$sms]);
+                      return $this->render('registration_ok', ['sms' => $sms]);
                  
                  }
                  else {
