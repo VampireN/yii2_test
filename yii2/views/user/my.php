@@ -7,7 +7,6 @@ use yii\widgets\DetailView;
 $this->title = 'Моя страница';
 $this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['/user']];
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 <ul>
  <li><?= Html::a('Все пользователи', ['index']) ?></li>

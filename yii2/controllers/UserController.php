@@ -155,7 +155,11 @@ class UserController extends \yii\web\Controller
     public function actionUpdate($id)
     {
         $model = $this->loadModel($id);
-		
+		$model->scenario = 'update';
+		if (isset($_POST['ajax']) && $_POST['ajax'] === 'update-form') {
+            echo ActiveForm::validate($model);
+            Yii::app()->end();
+        }
         if ($model->load(Yii::$app->request->post()) )
 		 {
 	        $model->avatar = UploadedFile::getInstance($model, 'avatar');
@@ -240,58 +244,56 @@ class UserController extends \yii\web\Controller
             $this->redirect(Yii::$app()->homeUrl);
         }
         else {
-		      If(isset($_GET['ref'])) {
+		      if (isset($_GET['ref'])) {
 		      $ref = $_GET['ref'];
-			  //$ref = Yii::$app->request->get('ref');
               $model_ref->id_ref =(int)$ref;
-               }
-			   else {
-			   $ref = 0;
-			   }
+              }
+			  else {
+			  $ref = 0;
+			  }
+			  
               if (isset($_POST['Personaldata'])){
                   $model->attributes = $_POST['Personaldata'];
                   $model->verifyCode = $_POST['Personaldata']['verifyCode'];
-
-                if ($model->validate()) {
+				  
+                  if ($model->validate()) {
 				
-                    $model->avatar = UploadedFile::getInstance($model, 'avatar');
+                      $model->avatar = UploadedFile::getInstance($model, 'avatar');
 
-                    if ($model->avatar) {
-                        $sourcePath = pathinfo($model->avatar->name);
-                        $fileName = date('m-d') . '-' . md5($model->username) . '.' . $sourcePath['extension'];
-                        $model->photo = $fileName;
-                        $file = Yii::$app->basePath . '/web/images/users/' . $fileName;
+                      if ($model->avatar) {
+                          $sourcePath = pathinfo($model->avatar->name);
+                          $fileName = date('m-d') . '-' . md5($model->username) . '.' . $sourcePath['extension'];
+                          $model->photo = $fileName;
+                          $file = Yii::$app->basePath . '/web/images/users/' . $fileName;
 
-                        $model->avatar->saveAs($file);
-                    }
-					$sms=$model->username;
-                    $model->setPassword($model->password);
-					$model->generateAuthKey();
-                   // $model->save();
+                          $model->avatar->saveAs($file);
+                      }
+					  
+					  $sms = $model->username;
+                      $model->setPassword($model->password);
+					  $model->generateAuthKey();
+                      $model->save(false);
 					
-                    $model_ref->id_user = $model->id;
-                    $model_ref->number = 0;
-					$sms=$model_ref->id_user;
-                    $model_ref->save();
+                      $model_ref->id_user = $model->id;
+                      $model_ref->number = 0;
+                      $model_ref->save();
                      
-                    if ($ref !== 0 && $ref !== null) {
-                        $ref_user = Refuser::findOne(['id_user' => $ref]);
+                      if ($ref !== 0 && $ref !== null) {
+                          $ref_user = Refuser::findOne(['id_user' => $ref]);
 
-                        if ($ref_user !== null) {
-							$num = $ref_user->number;
-                            $ref_user->number=$num+1 ;
-                            $ref_user->save();
-                        }
-                    }
+                          if ($ref_user !== null) {
+							  $num = $ref_user->number;
+                              $ref_user->number = $num + 1 ;
+                              $ref_user->save();
+                          }
+                      }
 					
-					$model->save();
-					//$model_ref->save();
-                    return $this->render('registration_ok',['sms'=>$sms]);
+                      return $this->render('registration_ok',['sms'=>$sms]);
                  
-                }
-                else {
-                    return $this->render('registration', ['model' => $model]);
-                }
+                 }
+                 else {
+                      return $this->render('registration', ['model' => $model]);
+                 }
               }
             else {
                 return $this->render('registration', ['model' => $model]);

@@ -77,7 +77,7 @@ class Personaldata extends \yii\db\ActiveRecord
 			 'checkExtensionByMimeType' => false,
 			 'maxSize'=>1024 * 1024 * 5, // 5 MB
 			],
-			//['verifyCode', 'captcha'/*,'message' => 'Неверный код.'*/],
+			['verifyCode', 'captcha','message' => 'Неверный код.','on' => 'registration'],
 			['username', 'match', 'pattern' => '/^[A-Za-z0-9А-Яа-я\s,]+$/u',
 			'message' => 'Логин содержит недопустимые символы.'
 			],
